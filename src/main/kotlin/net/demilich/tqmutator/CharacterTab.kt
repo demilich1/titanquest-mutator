@@ -23,6 +23,13 @@ fun CharacterTab(viewModel: TitanQuestViewModel) {
         StringValueRow("Level:", viewModel, viewModel.level, true)
         StringValueRow("Money:", viewModel, viewModel.money, false, InputValidation.INTEGER)
         StringValueRow(
+            "Available attribute points:",
+            viewModel,
+            viewModel.availableAttributePoints,
+            false,
+            InputValidation.INTEGER
+        )
+        StringValueRow(
             "Available skillpoints:",
             viewModel,
             viewModel.availableSkillpoints,

@@ -9,6 +9,7 @@ const val MARKER_HEADER_VERSION = "headerVersion"
 const val MARKER_PLAYER_LEVEL = "playerLevel"
 const val MARKER_PLAYER_NAME = "myPlayerName"
 const val MARKER_MONEY = "money"
+const val MARKER_ATTRIBUTE_POINTS = "modifierPoints"
 const val MARKER_SKILLPOINTS = "skillPoints"
 
 class TitanQuestCharacterFile(
@@ -18,10 +19,9 @@ class TitanQuestCharacterFile(
     var characterName: String,
     var level: Int,
     var money: Int,
+    var attributePoints: Int,
     var skillPoints: Int,
-) {
-
-}
+)
 
 fun loadCharacterFile(file: File): TitanQuestCharacterFile {
     val timeStart = System.currentTimeMillis()
@@ -32,6 +32,7 @@ fun loadCharacterFile(file: File): TitanQuestCharacterFile {
             MARKER_PLAYER_LEVEL,
             MARKER_PLAYER_NAME,
             MARKER_MONEY,
+            MARKER_ATTRIBUTE_POINTS,
             MARKER_SKILLPOINTS
         )
     )
@@ -41,11 +42,21 @@ fun loadCharacterFile(file: File): TitanQuestCharacterFile {
     val playerLevel = readByte(buffer, markers[MARKER_PLAYER_LEVEL]!!)
     val playerName = readUTF16(buffer, markers[MARKER_PLAYER_NAME]!!)
     val money = readInt(buffer, markers[MARKER_MONEY]!!)
+    val attributePoints = readInt(buffer, markers[MARKER_ATTRIBUTE_POINTS]!!)
     val skillPoints = readInt(buffer, markers[MARKER_SKILLPOINTS]!!)
     val duration = System.currentTimeMillis() - timeStart
     logger.info("LOADING character file was successful, took $duration ms")
 
-    return TitanQuestCharacterFile(file, markers, headerVersion, playerName, playerLevel, money, skillPoints)
+    return TitanQuestCharacterFile(
+        file,
+        markers,
+        headerVersion,
+        playerName,
+        playerLevel,
+        money,
+        attributePoints,
+        skillPoints
+    )
 }
 
 fun saveCharacterFile(saveData: TitanQuestCharacterFile) {
@@ -60,6 +71,9 @@ fun saveCharacterFile(saveData: TitanQuestCharacterFile) {
     }
     if (markers.containsKey(MARKER_MONEY)) {
         writeInt(buffer, markers[MARKER_MONEY]!!, saveData.money)
+    }
+    if (markers.containsKey(MARKER_ATTRIBUTE_POINTS)) {
+        writeInt(buffer, markers[MARKER_ATTRIBUTE_POINTS]!!, saveData.attributePoints)
     }
     if (markers.containsKey(MARKER_SKILLPOINTS)) {
         writeInt(buffer, markers[MARKER_SKILLPOINTS]!!, saveData.skillPoints)
@@ -105,7 +119,7 @@ private fun readUTF16(buffer: ByteBuffer, offset: Int): String {
     return String(bytes, Charset.forName("UTF-16LE"))
 }
 
-private fun writeInt(buffer: ByteBuffer, offset:Int, value: Int) {
+private fun writeInt(buffer: ByteBuffer, offset: Int, value: Int) {
     buffer.putInt(offset, value)
 }
 
