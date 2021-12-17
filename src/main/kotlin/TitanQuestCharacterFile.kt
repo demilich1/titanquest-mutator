@@ -1,6 +1,5 @@
 import org.apache.logging.log4j.kotlin.logger
 import java.io.File
-import java.lang.Integer.min
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
@@ -9,11 +8,12 @@ val logger = logger("TitanQuestCharacterFileKt")
 
 class TitanQuestCharacterFile(
     val file: File,
+    val markers: Map<String, Int>,
     var headerVersion: Int,
     var characterName: String,
     var level: Int,
     var money: Int,
-    var skillPoints: Int
+    var skillPoints: Int,
 ) {
 
 }
@@ -21,56 +21,64 @@ class TitanQuestCharacterFile(
 fun loadCharacterFile(file: File): TitanQuestCharacterFile {
     val timeStart = System.currentTimeMillis()
     val bytes = file.readBytes()
+    val markers = findMarkers(
+        bytes, listOf(
+            "headerVersion",
+            "playerLevel",
+            "myPlayerName",
+            "money",
+            "skillPoints"
+        )
+    )
     val buffer = ByteBuffer.wrap(bytes)
     buffer.order(ByteOrder.LITTLE_ENDIAN)
-    val headerVersion = readByte(buffer, "headerVersion", 64)
-    val playerLevel = readByte(buffer, "playerLevel", 256)
-    val playerName = readUTF16(buffer, "myPlayerName", 256)
-    val money = readInt(buffer, "money", Short.MAX_VALUE.toInt())
-    val skillPoints = readInt(buffer, "skillPoints", Short.MAX_VALUE.toInt())
-    println("headerVersion: $headerVersion")
-    println("playerName: $playerName")
-    println("playerLevel: $playerLevel")
-    println("money: $money")
-    println("skillPoints: $skillPoints")
+    val headerVersion = readByte(buffer, markers["headerVersion"]!!)
+    val playerLevel = readByte(buffer, markers["playerLevel"]!!)
+    val playerName = readUTF16(buffer, markers["myPlayerName"]!!)
+    val money = readInt(buffer, markers["money"]!!)
+    val skillPoints = readInt(buffer, markers["skillPoints"]!!)
     val duration = System.currentTimeMillis() - timeStart
-    logger.info ("Loading character file was successful, took $duration ms" )
-    return TitanQuestCharacterFile(file, headerVersion, playerName, playerLevel, money, skillPoints)
+    logger.info("LOADING character file was successful, took $duration ms")
+
+    return TitanQuestCharacterFile(file, markers, headerVersion, playerName, playerLevel, money, skillPoints)
 }
 
 fun saveCharacterFile(characterFile: TitanQuestCharacterFile) {
-
+    val timeStart = System.currentTimeMillis()
+    //TODO: implement
+    val duration = System.currentTimeMillis() - timeStart
+    logger.info("SAVING character file was successful, took $duration ms")
 }
 
-fun seekMarker(stream: ByteBuffer, marker: String, lookAhead: Int = 1024) {
-    val pos = stream.position()
-    //TODO: this is very inperformant, always reading the whole buffer when looking for one marker
-    val bufferSize = min(lookAhead, stream.remaining())
-    val bytes = ByteArray(bufferSize)
-    stream.get(bytes)
+private fun findMarkers(bytes: ByteArray, markers: List<String>): Map<String, Int> {
+    val markerMap = mutableMapOf<String, Int>()
+    for (marker in markers) {
+        val markerBytes = marker.toByteArray()
+        val index = indexOf(bytes, markerBytes)
+        if (index == -1) {
+            logger.error("Expected marker '$marker' could not be found in savefile")
+            continue
+        }
+        val offset = index + markerBytes.size
+        markerMap[marker] = offset
 
-    val markerBytes = marker.toByteArray()
-    var index = indexOf(bytes, markerBytes)
-    if (index == -1) {
-        println("Marker '$marker' could not be found")
     }
-    index += markerBytes.size
-    stream.position(pos + index)
+    return markerMap
 }
 
-fun readByte(stream: ByteBuffer, marker: String, lookAhead: Int = 1024): Int {
-    seekMarker(stream, marker, lookAhead)
+private fun readByte(stream: ByteBuffer, offset: Int): Int {
+    stream.position(offset)
     return stream.get().toInt()
 }
 
-fun readInt(stream: ByteBuffer, marker: String, lookAhead: Int = 1024): Int {
-    seekMarker(stream, marker, lookAhead)
+private fun readInt(stream: ByteBuffer, offset: Int): Int {
+    stream.position(offset)
     return stream.getInt()
 }
 
-fun readUTF16(stream: ByteBuffer, marker: String, lookAhead: Int = 1024): String {
-    seekMarker(stream, marker, lookAhead)
-    val len = stream.getInt() * 2
+private fun readUTF16(stream: ByteBuffer, offset: Int): String {
+    stream.position(offset)
+    val len = stream.getInt() * 2 // each character is two bytes
     val bytes = ByteArray(len)
     stream.get(bytes)
     return String(bytes, Charset.forName("UTF-16LE"))
