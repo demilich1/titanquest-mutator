@@ -1,3 +1,5 @@
+package net.demilich.tqmutator
+
 fun indexOf(haystack: ByteArray?, needle: ByteArray?): Int {
     // needle is null or empty
     if (needle == null || needle.size == 0) return 0

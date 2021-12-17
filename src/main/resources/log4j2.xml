@@ -10,7 +10,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <!-- Root logger referring to console appender -->
+        <!-- Root net.demilich.tqmutator.getLogger referring to console appender -->
         <Root level="debug" additivity="false">
             <AppenderRef ref="console" />
         </Root>

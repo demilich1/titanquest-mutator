@@ -1,10 +1,9 @@
-import org.apache.logging.log4j.kotlin.logger
+package net.demilich.tqmutator
+
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
-
-val logger = logger("TitanQuestCharacterFileKt")
 
 class TitanQuestCharacterFile(
     val file: File,
