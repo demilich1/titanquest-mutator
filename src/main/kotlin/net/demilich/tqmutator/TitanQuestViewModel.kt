@@ -5,14 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 
 class TitanQuestViewModel {
 
-    var filename: MutableState<String> = mutableStateOf("<please load a Titan Quest character file>")
-    var name: MutableState<String> = mutableStateOf("")
-    var money: MutableState<String> = mutableStateOf("0")
-    var level: MutableState<String> = mutableStateOf("0")
-    var availableSkillpoints: MutableState<String> = mutableStateOf("0")
+    val filename: MutableState<String> = mutableStateOf("<please load a Titan Quest character file>")
+    val dirty: MutableState<Boolean> = mutableStateOf(false)
+    val showDialog: MutableState<Boolean> = mutableStateOf(false)
+    val name: MutableState<String> = mutableStateOf("")
+    val money: MutableState<String> = mutableStateOf("0")
+    val level: MutableState<String> = mutableStateOf("0")
+    val availableSkillpoints: MutableState<String> = mutableStateOf("0")
 
     fun update(data: TitanQuestCharacterFile) {
         filename.value = data.file.path
+        dirty.value = false
         name.value = data.characterName
         money.value = data.money.toString()
         level.value = data.level.toString()

@@ -8,28 +8,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CharacterTab(viewModel: TitanQuestViewModel) {
-    Surface {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(8.dp)
-        ) {
-            StringValueRow("Name:", viewModel.name)
-            StringValueRow("Level:", viewModel.level, true)
-            StringValueRow("Money:", viewModel.money, false, InputValidation.INTEGER)
-            StringValueRow("Available skillpoints:", viewModel.availableSkillpoints, false, InputValidation.INTEGER)
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        StringValueRow("Name:", viewModel, viewModel.name)
+        StringValueRow("Level:", viewModel, viewModel.level, true)
+        StringValueRow("Money:", viewModel, viewModel.money, false, InputValidation.INTEGER)
+        StringValueRow(
+            "Available skillpoints:",
+            viewModel,
+            viewModel.availableSkillpoints,
+            false,
+            InputValidation.INTEGER
+        )
     }
 }
 
 @Composable
 private fun StringValueRow(
     prefix: String,
+    viewModel: TitanQuestViewModel,
     state: MutableState<String>,
     readOnly: Boolean = false,
     validation: InputValidation = InputValidation.NONE
@@ -40,9 +46,15 @@ private fun StringValueRow(
             value = state.value,
             onValueChange = {
                 when (validation) {
-                    InputValidation.NONE -> state.value = it
+                    InputValidation.NONE -> {
+                        state.value = it
+                        viewModel.dirty.value = true
+                    }
                     InputValidation.INTEGER -> {
-                        val text = validateNumberInput(it, state.value)
+                        val text = validateInputInteger(it, state.value)
+                        if (text != state.value) {
+                            viewModel.dirty.value = true
+                        }
                         state.value = text
                     }
                 }
@@ -59,7 +71,7 @@ enum class InputValidation {
     INTEGER
 }
 
-fun validateNumberInput(input: String, oldValue: String): String {
+fun validateInputInteger(input: String, oldValue: String): String {
     if (input.isEmpty()) {
         return "0"
     }
