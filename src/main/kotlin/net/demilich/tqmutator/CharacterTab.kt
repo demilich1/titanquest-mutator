@@ -21,19 +21,32 @@ fun CharacterTab(viewModel: TitanQuestViewModel) {
         ) {
             StringValueRow("Name:", viewModel.name)
             StringValueRow("Level:", viewModel.level, true)
-            StringValueRow("Money:", viewModel.money)
-            StringValueRow("Available skillpoints:", viewModel.availableSkillpoints)
+            StringValueRow("Money:", viewModel.money, false, InputValidation.INTEGER)
+            StringValueRow("Available skillpoints:", viewModel.availableSkillpoints, false, InputValidation.INTEGER)
         }
     }
 }
 
 @Composable
-fun StringValueRow(prefix: String, state: MutableState<String>, readOnly: Boolean = false) {
+private fun StringValueRow(
+    prefix: String,
+    state: MutableState<String>,
+    readOnly: Boolean = false,
+    validation: InputValidation = InputValidation.NONE
+) {
     Row(verticalAlignment = Alignment.Bottom) {
         Text(prefix, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(0.5f))
         TextField(
             value = state.value,
-            onValueChange = { state.value = it },
+            onValueChange = {
+                when (validation) {
+                    InputValidation.NONE -> state.value = it
+                    InputValidation.INTEGER -> {
+                        val text = validateNumberInput(it, state.value)
+                        state.value = text
+                    }
+                }
+            },
             singleLine = true,
             readOnly = readOnly,
             enabled = !readOnly
@@ -41,7 +54,19 @@ fun StringValueRow(prefix: String, state: MutableState<String>, readOnly: Boolea
     }
 }
 
-@Composable
-fun SaveButton() {
+enum class InputValidation {
+    NONE,
+    INTEGER
+}
 
+fun validateNumberInput(input: String, oldValue: String): String {
+    if (input.isEmpty()) {
+        return "0"
+    }
+    try {
+        val number = input.toInt()
+    } catch (e: Exception) {
+        return oldValue
+    }
+    return input
 }

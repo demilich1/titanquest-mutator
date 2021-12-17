@@ -18,6 +18,7 @@ fun App(state: TitanQuestMutatorState) {
     Column(modifier = Modifier.padding(16.dp)) {
         Header(state)
         CharacterTab(state.viewModel)
+        Footer(state)
     }
 }
 
