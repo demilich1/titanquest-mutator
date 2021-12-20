@@ -12,11 +12,20 @@ Currently it is possible to edit the following values:
 - [x] Available attribute points
 - [x] Available skillpoints
 
+### How to use
+1. Quit Titan Quest (this is important, do not use while game is running)
+2. Start 'Titan Quest Mutator'
+3. Click 'Load character' and select your savefile (`%USERPROFILE%\Documents\My Games\Titan Quest - Immortal Throne\SaveData\<_CharacterName>\Player.chr`)
+4. Edit values as desired
+5. Click 'Save character' to write the changes to the savefile
+
+### Example
+![Screenshot user interface](media/screenshot_ui.png)  
+
+### Result in-game
 ![Screenshot attributes](media/cheat_attributes.jpg)  
--> *get yourself some attributes* <-
 
 ![Screenshot skillpoints](media/cheat_skillpoints.jpg)  
--> *get yourself some skillpoints* <-
 
 ***Disclaimer: This application alters your savefile and may corrupt it. It is strongly recommend to make backups of your savefile. Use at your own risk***
 
