@@ -5,10 +5,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.6.10"
     id("org.jetbrains.compose") version "1.0.1-rc2"
+    id ("com.github.johnrengelman.shadow") version "7.1.1"
 }
 
-group = "me.demilich"
-version = "1.0"
+group = "net.demilich"
+version = "1.0.0"
 
 repositories {
     google()
@@ -23,18 +24,25 @@ dependencies {
     implementation(compose.desktop.currentOs)
 }
 
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "11"
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "net.demilich.tqmutator.MainKt"
+    }
 }
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "net.demilich.tqmutator.MainKt"
         nativeDistributions {
+            modules("java.naming", "java.management")
             targetFormats(TargetFormat.Exe, TargetFormat.Deb)
             packageName = "titanquest_mutator"
             description = "Titan Quest AE savegame editor"
-            packageVersion = "1.0.0"
+            packageVersion = "$version"
         }
     }
 }
