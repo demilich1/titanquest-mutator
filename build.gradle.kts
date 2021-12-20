@@ -31,8 +31,9 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "mutator_titanquest"
+            targetFormats(TargetFormat.Exe, TargetFormat.Deb)
+            packageName = "titanquest_mutator"
+            description = "Titan Quest AE savegame editor"
             packageVersion = "1.0.0"
         }
     }
