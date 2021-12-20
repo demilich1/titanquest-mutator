@@ -83,6 +83,9 @@ private fun doSave(state: TitanQuestMutatorState) {
     } catch (e: Exception) {
         logger.error("Saving failed; user entered data is invalid")
     }
-    saveCharacterFile(data)
-    viewModel.dirty.value = false
+    val newData = saveCharacterFile(data)
+    if (newData != data) {
+        state.data = newData
+        viewModel.update(newData)
+    }
 }

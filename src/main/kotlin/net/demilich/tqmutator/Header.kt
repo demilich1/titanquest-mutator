@@ -17,7 +17,8 @@ fun Header(state: TitanQuestMutatorState) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Button(
             onClick = {
-                val selectedFile = openFileDialog(ComposeWindow(), "Open 'Titan Quest' Character File", listOf(".chr"))
+                val startDirectory = if (state.data != null) state.data!!.file.parent else null
+                val selectedFile = openFileDialog(ComposeWindow(), "Open 'Titan Quest' Character File", listOf(".chr"), startDirectory)
                     ?: return@Button
                 logger.info("Selected file: $selectedFile")
                 state.data = loadCharacterFile(selectedFile)
@@ -31,7 +32,7 @@ fun Header(state: TitanQuestMutatorState) {
     }
 }
 
-private fun openFileDialog(window: ComposeWindow, title: String, allowedExtensions: List<String>): File? {
+private fun openFileDialog(window: ComposeWindow, title: String, allowedExtensions: List<String>, startDirectory: String?): File? {
     val files = FileDialog(window, title, FileDialog.LOAD).apply {
         // windows
         file = allowedExtensions.joinToString(";") { "*$it" } // e.g. '*.jpg'
@@ -41,6 +42,10 @@ private fun openFileDialog(window: ComposeWindow, title: String, allowedExtensio
             allowedExtensions.any {
                 name.endsWith(it)
             }
+        }
+
+        if (startDirectory != null) {
+            directory = startDirectory
         }
 
         isVisible = true
