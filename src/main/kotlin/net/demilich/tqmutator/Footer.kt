@@ -1,30 +1,41 @@
 package net.demilich.tqmutator
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import java.lang.Exception
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 @Composable
 fun Footer(state: TitanQuestMutatorState) {
-    ConfirmDialog(state.viewModel.showDialog, state)
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Spacer(modifier = Modifier.weight(1.0f))
-        Button(
-            onClick = { onSave(state.viewModel.showDialog) }, modifier = Modifier.padding(8.dp),
-            enabled = state.viewModel.dirty.value
-        ) {
-            Text("Save character")
+    val viewModel = state.viewModel
+    ConfirmDialog(viewModel.showDialog, state)
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(modifier = Modifier.weight(1.0f))
+            Button(
+                onClick = { onSave(viewModel.showDialog) }, modifier = Modifier.padding(8.dp),
+                enabled = viewModel.dirty.value
+            ) {
+                Text("Save character")
+            }
+        }
+        AnimatedVisibility(visible = viewModel.showSaveSuccess.value, modifier = Modifier.align(Alignment.End)) {
+            Text(
+                "Save successful",
+                color = Color(0, 100, 0),
+                fontWeight = FontWeight.Bold,
+            )
         }
     }
 }
@@ -87,5 +98,9 @@ private fun doSave(state: TitanQuestMutatorState) {
     if (newData != data) {
         state.data = newData
         viewModel.update(newData)
+    }
+    viewModel.showSaveSuccess.value = true
+    Timer("HideSuccessMessage", false).schedule(3000) {
+        viewModel.showSaveSuccess.value = false
     }
 }

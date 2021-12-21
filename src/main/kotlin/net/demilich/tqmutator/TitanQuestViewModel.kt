@@ -8,6 +8,7 @@ class TitanQuestViewModel {
     val filename: MutableState<String> = mutableStateOf("<please load a Titan Quest character file>")
     val dirty: MutableState<Boolean> = mutableStateOf(false)
     val showDialog: MutableState<Boolean> = mutableStateOf(false)
+    val showSaveSuccess: MutableState<Boolean> = mutableStateOf(false)
     val name: MutableState<String> = mutableStateOf("")
     val money: MutableState<String> = mutableStateOf("0")
     val level: MutableState<String> = mutableStateOf("0")

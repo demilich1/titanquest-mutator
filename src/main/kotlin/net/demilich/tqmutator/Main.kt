@@ -15,8 +15,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import org.apache.logging.log4j.kotlin.logger
 
-const val version = "1.0.0"
-
 val logger = logger("TitanQuestMutator")
 
 @Composable

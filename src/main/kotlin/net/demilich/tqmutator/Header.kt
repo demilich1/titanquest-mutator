@@ -19,7 +19,7 @@ import java.io.File
 fun Header(state: TitanQuestMutatorState) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-            Text("Version: $version", fontSize = 14.sp)
+            Text("Version: ${AppConfig.version}", fontSize = 14.sp)
         }
     }
     LoadFile(state)
@@ -56,6 +56,7 @@ private fun openFileDialog(
     allowedExtensions: List<String>,
     startDirectory: String?
 ): File? {
+
     val files = FileDialog(window, title, FileDialog.LOAD).apply {
         // windows
         file = allowedExtensions.joinToString(";") { "*$it" } // e.g. '*.jpg'
@@ -67,8 +68,10 @@ private fun openFileDialog(
             }
         }
 
-        if (startDirectory != null) {
-            directory = startDirectory
+        directory = if (startDirectory != null) {
+            startDirectory
+        } else {
+            System.getProperty("user.home") + File.separator + AppConfig.DEFAULT_PATH
         }
 
         isVisible = true
