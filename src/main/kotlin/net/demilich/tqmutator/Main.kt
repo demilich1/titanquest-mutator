@@ -13,9 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import org.apache.logging.log4j.kotlin.logger
+import net.demilich.kisslog.LoggerFactory
 
-val logger = logger("TitanQuestMutator")
+val logger = LoggerFactory.getDefaultLogger()
 
 @Composable
 fun App(state: TitanQuestMutatorState) {

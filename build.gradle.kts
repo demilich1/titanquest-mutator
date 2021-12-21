@@ -18,9 +18,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.apache.logging.log4j:log4j-api:2.16.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.16.0")
-    implementation("org.apache.logging.log4j:log4j-api-kotlin:1.1.0")
     implementation(compose.desktop.currentOs)
 }
 
@@ -38,7 +35,6 @@ compose.desktop {
     application {
         mainClass = "net.demilich.tqmutator.MainKt"
         nativeDistributions {
-            modules("java.naming", "java.management")
             targetFormats(TargetFormat.Exe, TargetFormat.Deb)
             packageName = "titanquest_mutator"
             description = "Titan Quest AE savegame editor"

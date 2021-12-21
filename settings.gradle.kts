@@ -6,5 +6,5 @@ pluginManagement {
     }
     
 }
-rootProject.name = "mutator_titanquest"
+rootProject.name = "titanquest_mutator"
 
