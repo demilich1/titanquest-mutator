@@ -11,6 +11,8 @@ const val MARKER_PLAYER_NAME = "myPlayerName"
 const val MARKER_MONEY = "money"
 const val MARKER_ATTRIBUTE_POINTS = "modifierPoints"
 const val MARKER_SKILLPOINTS = "skillPoints"
+const val MARKER_STATS_KILLS = "numberOfKills"
+const val MARKER_STATS_DEATHS = "numberOfDeaths"
 
 val MARKER_LIST = listOf(
     MARKER_HEADER_VERSION,
@@ -18,7 +20,9 @@ val MARKER_LIST = listOf(
     MARKER_PLAYER_NAME,
     MARKER_MONEY,
     MARKER_ATTRIBUTE_POINTS,
-    MARKER_SKILLPOINTS
+    MARKER_SKILLPOINTS,
+    MARKER_STATS_KILLS,
+    MARKER_STATS_DEATHS
 )
 
 class TitanQuestCharacterFile(
@@ -30,6 +34,8 @@ class TitanQuestCharacterFile(
     var money: Int,
     var attributePoints: Int,
     var skillPoints: Int,
+    var numberOfKills: Int,
+    var numberOfDeaths: Int,
 ) {
     val oldName: String = characterName
 }
@@ -46,6 +52,8 @@ fun loadCharacterFile(file: File): TitanQuestCharacterFile {
     val money = readInt(buffer, markers[MARKER_MONEY]!!)
     val attributePoints = readInt(buffer, markers[MARKER_ATTRIBUTE_POINTS]!!)
     val skillPoints = readInt(buffer, markers[MARKER_SKILLPOINTS]!!)
+    val numberOfKills = readInt(buffer, markers[MARKER_STATS_KILLS]!!)
+    val numberOfDeaths = readInt(buffer, markers[MARKER_STATS_DEATHS]!!)
     val duration = System.currentTimeMillis() - timeStart
     logger.info("LOADING character file was successful, took $duration ms")
 
@@ -57,7 +65,9 @@ fun loadCharacterFile(file: File): TitanQuestCharacterFile {
         playerLevel,
         money,
         attributePoints,
-        skillPoints
+        skillPoints,
+        numberOfKills,
+        numberOfDeaths
     )
 }
 
@@ -79,6 +89,12 @@ fun saveCharacterFile(saveData: TitanQuestCharacterFile): TitanQuestCharacterFil
     }
     if (markers.containsKey(MARKER_SKILLPOINTS)) {
         writeInt(buffer, markers[MARKER_SKILLPOINTS]!!, saveData.skillPoints)
+    }
+    if (markers.containsKey(MARKER_STATS_KILLS)) {
+        writeInt(buffer, markers[MARKER_STATS_KILLS]!!, saveData.numberOfKills)
+    }
+    if (markers.containsKey(MARKER_STATS_DEATHS)) {
+        writeInt(buffer, markers[MARKER_STATS_DEATHS]!!, saveData.numberOfDeaths)
     }
 
     // write name last, as this changes file length and thus invalidates all markers

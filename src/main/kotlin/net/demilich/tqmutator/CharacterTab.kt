@@ -36,6 +36,20 @@ fun CharacterTab(viewModel: TitanQuestViewModel) {
             false,
             InputValidation.INTEGER
         )
+        StringValueRow(
+            "Number of kills:",
+            viewModel,
+            viewModel.numberOfKills,
+            false,
+            InputValidation.INTEGER
+        )
+        StringValueRow(
+            "Number of deaths:",
+            viewModel,
+            viewModel.numberOfDeaths,
+            false,
+            InputValidation.INTEGER
+        )
     }
 }
 
